@@ -232,14 +232,6 @@ Repository ini sudah menyediakan dokumentasi foto pada tiga kategori jarak:
 - `Dokumentasi/Jarak sedang/`
 - `Dokumentasi/Jarak jauh/`
 
-Untuk memenuhi pengujian minimum, catat hasil pada matriks berikut untuk
-setiap sign:
-
-| Jarak | Terang | Gelap | Sign teruji | LED yang diharapkan | LED aktual | Confidence | Hasil |
-|---|---|---|---|---|---|---|---|
-| Dekat | Ya | Ya | GO/SLOW/STOP | Hijau/Kuning/Merah | Isi hasil | Isi nilai | Lulus/Gagal |
-| Sedang | Ya | Ya | GO/SLOW/STOP | Hijau/Kuning/Merah | Isi hasil | Isi nilai | Lulus/Gagal |
-| Jauh | Ya | Ya | GO/SLOW/STOP | Hijau/Kuning/Merah | Isi hasil | Isi nilai | Lulus/Gagal |
 
 Skenario tambahan yang wajib didokumentasikan:
 
