@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 3
+names: ['Go', 'Slow', 'Stop']
+
+roboflow:
+  workspace: adrianus-tukmp
+  project: lalu-lintas-k6fep
+  version: 2
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/adrianus-tukmp/lalu-lintas-k6fep/dataset/2
