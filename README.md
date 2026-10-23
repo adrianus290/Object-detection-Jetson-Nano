@@ -250,7 +250,44 @@ Skenario tambahan yang wajib didokumentasikan:
 5. Pengujian saat dua sign terlihat sekaligus jika skenario tersebut
    diperlukan; dokumentasikan aturan prioritas `STOP > SLOW > GO`.
 
-Hasil dokuemntasi 
-\Dokumentasi\Jarak dekat\STOP terang dekat.jpeg
-\Dokumentasi\Jarak jauh\SLOW terang jauh.jpeg
-\Dokumentasi\Jarak sedang\GO terang sedang.jpeg
+### Menampilkan foto di GitHub
+
+File gambar yang berada di repository dapat ditampilkan di README dengan
+format Markdown berikut:
+
+```markdown
+![Keterangan gambar](Dokumentasi/Jarak%20dekat/STOP%20terang%20dekat.jpeg)
+```
+
+Gunakan tanda `%20` untuk setiap spasi pada nama folder atau file. Path harus
+relatif terhadap lokasi `README.md`, menggunakan `/` (bukan `\`). Setelah file
+README dan gambar sudah di-commit lalu di-push ke GitHub, gambar akan tampil
+otomatis di halaman repository.
+
+Contoh galeri dokumentasi pengujian yang sudah tersedia:
+
+#### Jarak dekat
+
+| Sign | Kondisi terang | Kondisi gelap |
+|---|---|---|
+| GO | ![GO terang dekat](Dokumentasi/Jarak%20dekat/GO%20terang%20dekat.jpeg) | ![GO gelap dekat](Dokumentasi/Jarak%20dekat/GO%20gelap%20dekat.jpeg) |
+| SLOW | ![SLOW terang dekat](Dokumentasi/Jarak%20dekat/SLOW%20terang%20dekat.jpeg) | ![SLOW gelap dekat](Dokumentasi/Jarak%20dekat/SLOW%20gelap%20dekat.jpeg) |
+| STOP | ![STOP terang dekat](Dokumentasi/Jarak%20dekat/STOP%20terang%20dekat.jpeg) | ![STOP gelap dekat](Dokumentasi/Jarak%20dekat/STOP%20gelap%20dekat.jpeg) |
+
+#### Jarak sedang
+
+| Sign | Kondisi terang | Kondisi gelap |
+|---|---|---|
+| GO | ![GO terang sedang](Dokumentasi/Jarak%20sedang/GO%20terang%20sedang.jpeg) | ![GO gelap sedang](Dokumentasi/Jarak%20sedang/GO%20gelap%20sedang.jpeg) |
+| SLOW | ![SLOW terang sedang](Dokumentasi/Jarak%20sedang/SLOW%20terang%20sedang.jpeg) | ![SLOW gelap sedang](Dokumentasi/Jarak%20sedang/SLOW%20gelap%20sedang.jpeg) |
+| STOP | ![STOP terang sedang](Dokumentasi/Jarak%20sedang/STOP%20terang%20sedang.jpeg) | ![STOP gelap sedang](Dokumentasi/Jarak%20sedang/STOP%20gelap%20sedang.jpeg) |
+
+#### Jarak jauh
+
+| Sign | Kondisi terang | Kondisi gelap |
+|---|---|---|
+| GO | ![GO terang jauh](Dokumentasi/Jarak%20jauh/GO%20terang%20jauh.jpeg) | ![GO gelap jauh](Dokumentasi/Jarak%20jauh/GO%20gelap%20jauh.jpeg) |
+| SLOW | ![SLOW terang jauh](Dokumentasi/Jarak%20jauh/SLOW%20terang%20jauh.jpeg) | ![SLOW gelap jauh](Dokumentasi/Jarak%20jauh/SLOW%20gelap%20jauh.jpeg) |
+| STOP | ![STOP terang jauh](Dokumentasi/Jarak%20jauh/STOP%20terang%20jauh.jpeg) | ![STOP gelap jauh](Dokumentasi/Jarak%20jauh/STOP%20gelap%20jauh.jpeg) |
+
+
