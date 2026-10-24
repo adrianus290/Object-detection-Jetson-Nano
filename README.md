@@ -1,16 +1,16 @@
-# Traffic Sign Recognition dengan NVIDIA Jetson Nano
+# Traffic Sign Detection dengan Jetson Nano dan Model YOLO11
 
 Sistem ini menggunakan **NVIDIA Jetson Nano Developer Kit**, kamera CSI, model
 deteksi objek **YOLO11**, dan tiga LED sebagai aktuator. Kamera membaca video
 secara real-time, model mengenali rambu `GO`, `SLOW`, atau `STOP`, kemudian
 program mengubah hasil deteksi menjadi keputusan GPIO:
 
-| Sign yang dikenali | Keputusan | LED |
+| Sign yang dikenali | LED |
 |---|---|---|
-| `STOP` | Berhenti | Merah |
-| `SLOW` | Kurangi kecepatan | Kuning |
-| `GO` | Jalan | Hijau |
-| Tidak ada sign atau confidence < 0.50 | Kondisi aman | Semua LED mati |
+| `STOP` | Merah |
+| `SLOW` | Kuning |
+| `GO` | Hijau |
+| Tidak ada sign atau confidence < 0.50 | Semua LED mati |
 
 Alur sistem:
 
@@ -18,7 +18,7 @@ Alur sistem:
 Kamera CSI
     │
     ▼
-GStreamer (nvarguscamerasrc)
+GStreamer
     │
     ▼
 OpenCV + ONNX Runtime (YOLO11)
@@ -49,7 +49,6 @@ Jetson.GPIO
   `Ctrl+C`.
 
 ## Hardware
-
 ### Komponen
 
 - NVIDIA Jetson Nano Developer Kit.
@@ -59,12 +58,8 @@ Jetson.GPIO
   - merah untuk `STOP`,
   - kuning untuk `SLOW`,
   - hijau untuk `GO`.
-- 3 resistor pembatas arus, disarankan 220--330 ohm.
-- Catu daya Jetson Nano yang sesuai.
-- Media sign `GO`, `SLOW`, dan `STOP` untuk pengujian.
-
-Jangan menghubungkan LED langsung tanpa resistor. Pastikan ground rangkaian
-LED terhubung ke ground Jetson Nano.
+- 3 resistor pembatas arus 220.
+- Gambar sign `GO`, `SLOW`, dan `STOP` untuk pengujian.
 
 ### Wiring GPIO
 
@@ -73,34 +68,21 @@ fisik**, bukan nomor BCM:
 
 | Fungsi | Variabel program | Pin fisik Jetson | Sambungan |
 |---|---|---:|---|
-| LED merah | `LED_MERAH = 18` | 11 | GPIO output -> resistor -> anoda LED |
+| LED merah | `LED_MERAH = 18` | 24 | GPIO output -> resistor -> anoda LED |
 | LED kuning | `LED_KUNING = 12` | 13 | GPIO output -> resistor -> anoda LED |
-| LED hijau | `LED_HIJAU = 16` | 16 | GPIO output -> resistor -> anoda LED |
+| LED hijau | `LED_HIJAU = 16` | 26 | GPIO output -> resistor -> anoda LED |
 | Ground LED | - | GND, misalnya pin 14 | Katoda LED -> GND |
 
-Di source code, `LED_ACTIVE_LOW = False`, sehingga LED menyala ketika output
-GPIO berada pada level HIGH. Jika rangkaian menggunakan konfigurasi active-low,
-ubah nilai tersebut menjadi `True`.
-
-Tambahkan foto rangkaian aktual ke folder `Dokumentasi/`, misalnya:
-
-```text
-Dokumentasi/wiring-led-jetson.jpg
-Dokumentasi/arsitektur-sistem.png
-```
-
 ## Software dan dependencies
-
 ### Software utama
 
-- Ubuntu yang disediakan untuk Jetson Nano melalui JetPack.
+- Ubuntu  versi 18.8.2 yang disediakan untuk Jetson Nano melalui JetPack.
 - Python 3.
 - OpenCV.
 - NumPy.
 - ONNX Runtime.
 - `Jetson.GPIO`.
-- GStreamer dan plugin NVIDIA Jetson (`nvarguscamerasrc`,
-  `nvvidconv`, dan `fdsink`).
+-
 
 Import yang digunakan oleh [`main.py`](main.py):
 
@@ -116,39 +98,23 @@ Import yang digunakan oleh [`main.py`](main.py):
 > dikendalikan.
 
 ### Instalasi
-
 Jalankan perintah berikut pada Jetson Nano:
 
 ```bash
 sudo apt update
-sudo apt install -y python3-pip python3-opencv \
-    gstreamer1.0-tools gstreamer1.0-plugins-base \
-    gstreamer1.0-plugins-good
+sudo apt install -y python3-pip python3-opencv
 python3 -m pip install --upgrade pip
 python3 -m pip install numpy Jetson.GPIO
 ```
 
 Pasang ONNX Runtime yang kompatibel dengan versi JetPack, arsitektur
-`aarch64`, dan versi Python pada Jetson Nano. Paket ONNX Runtime untuk Jetson
-sebaiknya mengikuti wheel/build yang disediakan untuk lingkungan Jetson yang
-digunakan, bukan memasang wheel x86 biasa:
+`aarch64`, dan versi Python pada Jetson Nano.
 
 ```bash
 python3 -m pip install onnxruntime
 ```
 
-Jika perintah terakhir tidak menyediakan wheel yang kompatibel, gunakan build
-ONNX Runtime khusus Jetson sesuai versi JetPack yang terpasang. Verifikasi
-instalasi dengan:
-
-```bash
-python3 -c "import cv2, numpy, onnxruntime; print('dependency OK')"
-python3 -c "import Jetson.GPIO as GPIO; print('Jetson.GPIO OK')"
-gst-inspect-1.0 nvarguscamerasrc
-```
-
 ## Struktur repository
-
 Struktur penting saat ini:
 
 ```text
@@ -171,17 +137,14 @@ program dari root repository atau ubah `MODEL_ONNX_PATH` jika model disimpan
 di lokasi lain.
 
 ## Dataset dan Roboflow
-
 Dataset diberi label menggunakan **Roboflow** dan diekspor dalam format YOLO.
-Informasi dataset yang tersimpan di repository:
+Informasi dataset yang tersimpan di  pada folder `Dataset traffict sign`:
 
-- Project: [Lalu Lintas di Roboflow](https://universe.roboflow.com/adrianus-tukmp/lalu-lintas-k6fep)
-- Versi dataset: `2`.
 - Kelas: `Go`, `Slow`, `Stop`.
-- Jumlah gambar pada export: 231.
-- Lisensi dataset: CC BY 4.0.
-- Augmentasi yang tercatat: horizontal flip dengan probabilitas 50% dan
-  Gaussian blur acak 0--1.2 piksel.
+- Jumlah dataset sebelum augmentasi: 150 dengan 50 gambar `GO` 50 gambar `SLOW` 50 gambar `STOP`.
+- Dataset diaugmentasi: horizontal flip vertikal dan horizontal serta
+  Gaussian blur acak 0--1.2 piksel dengan masing masing menghasilkan.
+-Total dataset setelah augmentasi adalah: 231 data train, 14 datal validasi dan 7 data testing.
 
 Konfigurasi kelas dapat dilihat pada
 [`Dataset traffict sign/data.yaml`](Dataset%20traffict%20sign/data.yaml).
@@ -217,16 +180,11 @@ STATUS: TIDAK ADA RAMBU (All LEDs OFF)
 ```
 
 Pada kondisi ini semua LED dimatikan. Jika beberapa sign terdeteksi sekaligus,
-prioritas keputusan program adalah:
-
-```text
-STOP > SLOW > GO
-```
+prioritas keputusan program adalah pada nilai confident tertinggi.
 
 ## Pengujian minimum
-
 Pengujian perlu dilakukan dengan prosedur dan hasil yang dapat diulang.
-Repository ini sudah menyediakan dokumentasi foto pada tiga kategori jarak:
+Repository ini sudah menyediakan dokumentasi foto pada tiga kategori jarak serta pada dua kondisi pencahayaan yaitu gelap dan terang:
 
 - `Dokumentasi/Jarak dekat/`
 - `Dokumentasi/Jarak sedang/`
@@ -240,23 +198,23 @@ Skenario tambahan yang wajib didokumentasikan:
 3. Sign dengan confidence di bawah `0.50` dan verifikasi kondisi aman.
 4. Tidak ada sign di area kamera dan verifikasi semua LED mati.
 5. Pengujian saat dua sign terlihat sekaligus jika skenario tersebut
-   diperlukan; dokumentasikan aturan prioritas `STOP > SLOW > GO`.
+   diperlukan; dokumentasikan aturan prioritas adalah dengan nilai confident tertinggi.
 
-### Menampilkan foto di GitHub
 
-File gambar yang berada di repository dapat ditampilkan di README dengan
-format Markdown berikut:
+## Tabel Rekap Pengujian
 
-```markdown
-![Keterangan gambar](Dokumentasi/Jarak%20dekat/STOP%20terang%20dekat.jpeg)
-```
+| Sign | Jarak | Kondisi Cahaya | Confidence | LED | Hasil |
+|------|-------|----------------|------------|-----|------|
+| GO   | Dekat | Terang | 0.93 | Hijau | Berhasil |
+| SLOW | Sedang | Gelap | 0.87 | Kuning | Berhasil |
+| STOP | Jauh  | Terang | 0.89 | Merah | Berhasil |
+| -    | -     | Terang    | - | Semua LED mati | Berhasil |
 
-Gunakan tanda `%20` untuk setiap spasi pada nama folder atau file. Path harus
-relatif terhadap lokasi `README.md`, menggunakan `/` (bukan `\`). Setelah file
-README dan gambar sudah di-commit lalu di-push ke GitHub, gambar akan tampil
-otomatis di halaman repository.
-
-Contoh galeri dokumentasi pengujian yang sudah tersedia:
+|------|-------|----------------|------------|-----|
+| GO   | Dekat | Terang | 0.93 | Hijau |
+| SLOW | Sedang | Gelap | 0.87 | Kuning |
+| STOP | Jauh  | Terang | 0.96 | Merah |
+| -    | -     | -      | < 0.50 | Semua LED mati |
 
 #### Jarak dekat
 
