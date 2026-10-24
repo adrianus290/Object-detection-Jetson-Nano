@@ -6,7 +6,7 @@ secara real-time, model mengenali rambu `GO`, `SLOW`, atau `STOP`, kemudian
 program mengubah hasil deteksi menjadi keputusan GPIO:
 
 | Sign yang dikenali | LED |
-|---|---|---|
+|---|---|
 | `STOP` | Merah |
 | `SLOW` | Kuning |
 | `GO` | Hijau |
